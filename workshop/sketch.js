@@ -61,3 +61,16 @@ const sketch = () => {
 };
 
 canvasSketch(sketch, settings);
+
+/**
+ * NOTES
+ *
+ * NOISE
+ * const v = noise2D(x, y); // value is in -1..1 range
+ * const n = v * 0.5 + 0.5; // map to 0..1 range
+ * const L = Math.floor(n * 100); // turn into a percentage
+ * const hsl = `0, 0%, ${L}%)`; //get color value
+ *
+ * const frequency = 5.0; // frequency of the noise signal
+ * const v = noise2D = (x * frequency, y * frequency);
+ */
