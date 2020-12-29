@@ -1,16 +1,18 @@
 // Ensure ThreeJS is in global scope for the 'examples/'
-global.THREE = require("three");
+global.THREE = require('three');
 
 // Include any additional ThreeJS examples below
-require("three/examples/js/controls/OrbitControls");
+require('three/examples/js/controls/OrbitControls');
 
-const canvasSketch = require("canvas-sketch");
+const canvasSketch = require('canvas-sketch');
+const random = require('canvas-sketch-util/random');
+const palettes = require('nice-color-palettes');
 
 const settings = {
   // Make the loop animated
   animate: true,
   // Get a WebGL canvas rather than 2D
-  context: "webgl"
+  context: 'webgl'
 };
 
 const sketch = ({ context }) => {
@@ -35,17 +37,39 @@ const sketch = ({ context }) => {
   const scene = new THREE.Scene();
 
   // Setup a geometry
-  const geometry = new THREE.SphereGeometry(1, 32, 16);
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
 
-  // Setup a material
-  const material = new THREE.MeshBasicMaterial({
-    color: "red",
-    // wireframe: true
-  });
+  const palette = random.pick(palettes);
 
-  // Setup a mesh with geometry + material
-  const mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
+  for (let i = 0; i < 42; i++) {
+    // Setup a material
+    const material = new THREE.MeshStandardMaterial({
+      color: random.pick(palette),
+      // wireframe: true
+    });
+
+    // Setup a mesh with geometry + material
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(
+        random.range(-1, 1),
+        random.range(-1, 1),
+        random.range(-1, 1)
+    );
+    mesh.scale.set(
+        random.range(-1, 1),
+        random.range(-1, 1),
+        random.range(-1, 1)
+    );
+    mesh.scale.multiplyScalar(0.28);
+
+    scene.add(mesh);
+  }
+
+  scene.add(new THREE.AmbientLight('blue'));
+
+  const light = new THREE.DirectionalLight('white', 1);
+  light.position.set(0, 0, 4);
+  scene.add(light);
 
   // draw each frame
   return {
@@ -57,7 +81,7 @@ const sketch = ({ context }) => {
       const aspect = viewportWidth / viewportHeight;
 
       // Ortho zoom
-      const zoom = 1.0;
+      const zoom = 1.5;
 
       // Bounds
       camera.left = -zoom * aspect;
@@ -78,7 +102,7 @@ const sketch = ({ context }) => {
     },
     // Update & render your scene here
     render({ time }) {
-      mesh.rotation.y = time * 0.1;
+      // mesh.rotation.y = time * 0.1;
       // controls.update();
       renderer.render(scene, camera);
     },
