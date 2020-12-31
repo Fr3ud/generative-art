@@ -7,6 +7,8 @@ require('three/examples/js/controls/OrbitControls');
 const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
 const palettes = require('nice-color-palettes');
+const eases = require('eases');
+const BezierEasing = require('bezier-easing');
 
 const settings = {
   dimensions: [ 512, 512 ],
@@ -74,6 +76,8 @@ const sketch = ({ context }) => {
   light.position.set(0, 0, 4);
   scene.add(light);
 
+  const easeFn = BezierEasing(0.69, 0.03, 0.3, 0.99);
+
   // draw each frame
   return {
     // Handle resize events here
@@ -105,7 +109,8 @@ const sketch = ({ context }) => {
     },
     // Update & render your scene here
     render({ playhead }) {
-      scene.rotation.y = playhead * Math.PI * 2;
+      const t = Math.sin(playhead * Math.PI * 2);
+      scene.rotation.y = easeFn(t);
       // controls.update();
       renderer.render(scene, camera);
     },
